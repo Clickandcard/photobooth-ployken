@@ -53,7 +53,7 @@ max-width:100%;
 touch-action:none;
 }
 
-/* Album */
+/* Album Overlay */
 #albumOverlay{
 display:none;
 position:fixed;
@@ -63,20 +63,35 @@ z-index:3000;
 flex-direction:column;
 align-items:center;
 justify-content:center;
+padding:20px;
+box-sizing:border-box;
 }
 
-#albumOverlay img{
+#albumOverlay img#preview{
 max-width:95vw;
-max-height:80vh;
+max-height:70vh;
 border-radius:16px;
 box-shadow:0 10px 40px rgba(0,0,0,0.5);
 cursor:pointer;
 }
 
+/* FIXED thumbnail row */
 .thumbRow{
 display:flex;
 gap:12px;
 margin-top:20px;
+overflow-x:auto;
+max-width:95vw;
+padding-bottom:10px;
+scroll-behavior:smooth;
+}
+
+.thumbRow::-webkit-scrollbar{
+height:8px;
+}
+.thumbRow::-webkit-scrollbar-thumb{
+background:#d4b483;
+border-radius:999px;
 }
 
 .thumbRow img{
@@ -86,6 +101,12 @@ object-fit:cover;
 border-radius:12px;
 border:3px solid white;
 cursor:pointer;
+flex-shrink:0;
+transition:transform .2s;
+}
+
+.thumbRow img:hover{
+transform:scale(1.05);
 }
 </style>
 </head>
@@ -141,7 +162,7 @@ const slots=[
 let images=slots.map(()=>({img:null,x:0,y:0,scale:1,minScale:1,maxScale:4}));
 let active=-1;
 
-/* เลือกช่อง */
+/* Select slot */
 canvas.addEventListener("click",e=>{
 const r=canvas.getBoundingClientRect();
 const x=(e.clientX-r.left)*(canvas.width/r.width);
@@ -152,7 +173,7 @@ if(x>s.x&&x<s.x+s.w&&y>s.y&&y<s.y+s.h) active=i;
 });
 });
 
-/* โหลดรูป */
+/* Load image */
 function loadImage(src){
 const img=new Image();
 img.onload=()=>{
@@ -191,7 +212,7 @@ reader.onload=ev=>loadImage(ev.target.result);
 reader.readAsDataURL(e.target.files[0]);
 };
 
-/* Touch */
+/* Touch control */
 let isDragging=false,startX=0,startY=0,startDist=0,startScale=1;
 
 canvas.addEventListener("touchstart",e=>{
@@ -316,6 +337,3 @@ draw(true);
 
 </body>
 </html>
-
-
-
